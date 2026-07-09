@@ -1,0 +1,12 @@
+spring:
+  security:
+    oauth2:
+      resource server:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://keycloak:8080/realms/aurorapay} # Keycloak realm issuer
+
+eureka:
+  client:
+    service-url:
+      # Use Docker internal DNS when running in Compose; fallback to localhost for IntelliJ/local runs
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka} # Eureka Server registry URL

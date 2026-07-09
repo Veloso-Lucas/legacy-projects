@@ -1,0 +1,79 @@
+services:
+  postgres:
+    image: postgres:16 # PostgreSQL database used
+    container_name: aurora-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER} # DB username (loaded from .env)
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} # DB password (loaded from .env)
+      POSTGRES_DB: ${POSTGRES_DB} # Default database name (loaded from .env)
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432" # Host port -> container port (defaults to 5432 if POSTGRES_PORT is not set)
+    volumes:
+      - aurora_pg:/var/lib/postgresql/data # Persist database data locally
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"] # Checks if Postgres is ready to accept connections
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    networks:
+      - aurorapay # Shared network so containers can reach each other by service name
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.5 # Keycloak Identity Provider
+    container_name: aurora-keycloak
+    command: ["start-dev"] # Development mode (should be not used in production)
+    depends_on:
+      postgres:
+        condition: service_healthy # Wait until Postgres is healthy before starting Keycloak
+    environment:
+      KC_DB: postgres # Use Postgres as Keycloak database
+      KC_DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB} # "postgres" is the service name on the same Docker network
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN} # Admin user (loaded from .env)
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD} # Admin password (loaded from .env)
+    ports:
+      - "${KEYCLOAK_PORT:-8081}:8080" # Expose Keycloak on host (defaults to 8081 -> 8080 container)
+    networks:
+      - aurorapay
+
+  discovery-server:
+    build:
+      context: ../../backend/services/aurorapay-eureka-server # Path to the Eureka Server project (must contain a Dockerfile)
+    container_name: aurorapay-eureka-server
+    ports:
+      - "8761:8761" # Eureka dashboard and registry endpoint
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker # Use the "docker" Spring profile inside the container
+    healthcheck:
+      # NOTE: this healthcheck requires 'wget' inside the image. Ensure your Dockerfile installs it.
+      test: ["CMD", "wget", "-qO-", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - aurorapay
+
+  aurorapay-gateway:
+    build:
+      context: ../../backend/services/aurorapay-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}
+      - KEYCLOAK_ISSUER_URI=${KEYCLOAK_ISSUER_URI}
+    depends_on:
+      discovery-server:
+        condition: service_healthy
+      keycloak:
+        condition: service_started
+    networks:
+    - aurorapay
+
+volumes:
+  aurora_pg: # Named volume for Postgres persistence
+
+networks:
+  aurorapay: # Shared network for all AuroraPay containers
+    driver: bridge

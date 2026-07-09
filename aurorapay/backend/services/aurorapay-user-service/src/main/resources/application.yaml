@@ -1,0 +1,23 @@
+server:
+  port: 8082 # Gateway HTTP port (entry point)
+
+spring:
+  application:
+    name: aurorapay-user-service
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics # Expose basic Actuator endpoints
+  endpoint:
+    health:
+      show-details: always # Show health details (useful for development)
+
+eureka:
+  client:
+    healthcheck:
+      enabled: true
+  instance:
+    preferIpAddress: false #Show ip in Eureka instead of hostname
+    instance-id: ${spring.application.name}:${random.value}

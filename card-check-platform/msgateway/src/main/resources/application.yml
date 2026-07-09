@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: msgateway
+
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true # Enable in this gateway to dins others ms registered in teh discovery server
+          lower-case-service-id: true # Make sure that the names of services be converted to lowercase
+
+server:
+  port: 8080
+
+
+eureka:
+  client:
+    fetch-registry: true # can find list of services registered in eureka
+    register-with-eureka: true # Gateway registry in Eureka too
+    service-url:
+      defaultZone: http://localhost:8761/eureka

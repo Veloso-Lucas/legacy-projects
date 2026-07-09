@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/app_primary_color"
+    android:fillViewport="true"
+    tools:context=".view.countdownTimer.CountdownTimerFragment">
+
+    <include layout="@layout/app_toolbar"  android:id="@+id/appToolbar"/>
+
+    <EditText
+        android:id="@+id/editTextTimerName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="73dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:backgroundTint="@color/app_primary_color"
+        android:fontFamily="@font/roboto"
+        android:gravity="center"
+        android:inputType="text"
+        android:lines="1"
+        android:padding="15dp"
+        android:enabled="true"
+        android:text="TIMER NAME"
+        android:textColor="@color/white"
+        android:textSize="30sp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTimerName"
+        app:layout_constraintBottom_toTopOf="@+id/btn_start_count"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="200dp"
+        android:layout_marginBottom="210dp"
+        android:layout_marginHorizontal="60dp"
+        android:isScrollContainer="false"
+        android:background="@drawable/background_rounded_counter"
+        android:padding="20dp">
+
+
+        <TextView
+            android:id="@+id/editTextSelectedDate"
+            android:layout_width="271dp"
+            android:layout_height="302dp"
+            android:background="@drawable/background_rounded_counter"
+            android:backgroundTint="@color/internal_counter"
+            android:fontFamily="@font/roboto"
+            android:gravity="center"
+            android:lines="2"
+            android:maxLength="50"
+            android:padding="20dp"
+            android:lineSpacingExtra="10dp"
+            android:text="999 days\n01:00:00"
+            android:textColor="@color/counter_text_color"
+            android:textSize="45sp" />
+
+    </RelativeLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_start_count"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="50dp"
+        android:layout_marginHorizontal="60dp"
+        app:backgroundTint="@color/white"
+        android:background="@drawable/background_rounded"
+        android:textColor="@color/app_primary_color"
+        android:fontFamily="@font/roboto"
+        android:textSize="23sp"
+        android:text="Start" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

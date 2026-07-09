@@ -1,0 +1,29 @@
+server:
+  port: 8080 # Gateway HTTP port (entry point)
+
+spring:
+  application:
+    name: aurorapay-gateway # Service name registered in Eureka
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true # Enable automatic route discovery from Eureka (lb://SERVICE-ID)
+              lower-case-service-id: true # Use lowercase service IDs when generating routes
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics # Expose basic Actuator endpoints
+  endpoint:
+    health:
+      show-details: always # Show health details (useful for development)
+
+
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
+    org.springframework.security: INFO

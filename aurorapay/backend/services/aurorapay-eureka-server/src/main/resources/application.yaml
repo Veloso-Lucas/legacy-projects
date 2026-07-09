@@ -1,0 +1,20 @@
+server:
+  port: 8761 # Port where the Eureka Server (service registry UI/API) will be exposed.
+
+spring:
+  application:
+    name: aurorapay-eureka-server # Logical application name (shown in logs/actuator).
+
+eureka:
+  client:
+    register-with-eureka: false # Do NOT register this application as a client in Eureka (it is the registry itself).
+    fetch-registry: false       # Do NOT fetch the registry from another Eureka server (standalone single-node setup).
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics # Expose basic Actuator endpoints for observability (/actuator/health, /info, /metrics).
+  endpoint:
+    health:
+      show-details: always # Show detailed health info (only useful in dev, not should be used in prod).

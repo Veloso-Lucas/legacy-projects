@@ -1,0 +1,12 @@
+spring:
+  application:
+  name: eurekaserver
+
+server:
+  port: 8761
+
+eureka:
+  client:
+    register-with-eureka: false # This property make this instance of eureka not be registered on another discovery server
+    fetch-registry: false #
+
